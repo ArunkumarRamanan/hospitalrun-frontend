@@ -411,7 +411,7 @@ function addAdmissionData(assert) {
   });
   andThen(() => {
     assert.equal(find('.modal-title').text(), 'New Note for Joe Bagadonuts', 'New Note dialog displays');
-    fillIn('.test-note-content textarea',NOTE_CONTENT);
+    fillIn('.test-note-content textarea', NOTE_CONTENT);
     click('.modal-footer button:contains(Add)');
   });
   andThen(function() {

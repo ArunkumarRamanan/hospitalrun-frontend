@@ -20,13 +20,13 @@
         <div class="form-group {{field.displayClassNames}}">
           <label>{{field.label}}</label>
           {{#each field.values as |checkbox|}}
-            {{rapidForm.checkbox label=checkbox.label property=(concat propertyPrefix checkbox.property) disabled=isReadonly}}
+            {{rapidForm.checkbox model=model label=checkbox.label property=(concat propertyPrefix checkbox.property) disabled=isReadonly}}
           {{/each}}
         </div>
       {{/if}}
       {{#if (eq field.type 'textarea')}}
         {{#unless isReadonly}}
-          {{expand-text label=field.label property=(concat propertyPrefix field.property) class=field.displayClassNames form=rapidForm}}
+          {{expand-text model=model label=field.label property=(concat propertyPrefix field.property) class=field.displayClassNames form=rapidForm}}
         {{else}}
           <div class="{{field.displayClassNames}}">
             <label>{{field.label}}</label>
@@ -36,7 +36,7 @@
       {{/if}}
       {{#if (eq field.type 'text')}}
         {{#unless isReadonly}}
-          {{rapidForm.input label=field.label property=(concat propertyPrefix field.property) class=field.displayClassNames}}
+          {{rapidForm.input model=model label=field.label property=(concat propertyPrefix field.property) class=field.displayClassNames}}
         {{else}}
           <div class="{{field.displayClassNames}}">
             <label>{{field.label}}</label>
@@ -47,6 +47,7 @@
       {{#if (eq field.type 'select')}}
         {{#unless isReadonly}}
           {{rapidForm.select label=field.label
+            model=model
             property=(concat propertyPrefix field.property)
             content=field.values
             class=field.displayClassNames
