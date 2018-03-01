@@ -43,7 +43,7 @@ test('crud operations on custom-forms', function(assert) {
       assert.equal(find('.custom-form-name').length, 0, 'No custom forms appears in the listing.');
     });
     andThen(function() {
-      createCustomFormForType(assert, 'Visit');
+      createCustomFormForType('Visit', false, assert);
     });
     andThen(function() {
       verifyPreview();
@@ -84,19 +84,19 @@ test('switching between pages with custom forms happens without errors', functio
   runWithPouchDump('default', function() {
     authenticateUser();
 
-    createCustomFormForType(null, 'Patient', true);
-    createCustomFormForType(null, 'Lab', true);
+    createCustomFormForType('Patient', true);
+    createCustomFormForType('Lab', true);
 
     visit('/patients/edit/new');
     waitToAppear('h4');
     andThen(function() {
-      assert.equal(find('h4').text(), 'Test Custom Form for Patient (included)', 'Patient custom form is displayed');
+      assert.equal(find('h4').text(), 'Test Custom Form for Patient included', 'Patient custom form is displayed');
     });
 
     visit('/labs/edit/new');
     waitToAppear('h4');
     andThen(function() {
-      assert.equal(find('h4').text(), 'Test Custom Form for Lab (included)', 'Lab custom form is displayed');
+      assert.equal(find('h4').text(), 'Test Custom Form for Lab included', 'Lab custom form is displayed');
     });
   });
 });

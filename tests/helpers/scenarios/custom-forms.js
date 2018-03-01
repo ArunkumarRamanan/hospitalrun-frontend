@@ -1,11 +1,11 @@
 import Ember from 'ember';
 
-Ember.Test.registerAsyncHelper('createCustomFormForType', function(app, assert, formType, alwaysInclude) {
-  let crusts =  ['Thin', 'Deep Dish', 'Flatbread'];
-  let desserts = ['Ice Cream', 'Cookies', 'Cake'];
-  let toppings =  ['Cheese', 'Pepperoni', 'Mushrooms'];
-  let header = ['______________________________'];
+const crusts =  ['Thin', 'Deep Dish', 'Flatbread'];
+const desserts = ['Ice Cream', 'Cookies', 'Cake'];
+const toppings =  ['Cheese', 'Pepperoni', 'Mushrooms'];
+const header = ['______________________________'];
 
+Ember.Test.registerAsyncHelper('createCustomFormForType', function(app, formType, alwaysInclude, assert) {
   function addField(fieldType, label, values) {
     click('button:contains(Add Field)');
     waitToAppear('.modal-dialog');
@@ -54,7 +54,7 @@ Ember.Test.registerAsyncHelper('createCustomFormForType', function(app, assert, 
       assert.equal(currentURL(), '/admin/custom-forms/edit/new', 'Navigated to create new custom form');
     }
 
-    fillIn('.custom-form-name input', `Test Custom Form for ${formType} (${alwaysInclude ? '' : 'NOT '}included)`);
+    fillIn('.custom-form-name input', `Test Custom Form for ${formType} ${alwaysInclude ? '' : 'NOT '}included`);
     fillIn('.custom-form-columns input', '2');
     select('.custom-form-type', formType);
     if (alwaysInclude) {
@@ -107,35 +107,33 @@ Ember.Test.registerAsyncHelper('checkCustomFormIsDisplayed', function(app, asser
 
     let formDiv = find(`h4:contains(${header}) + .js-custom-form`);
 
-    assert.equal(find('label:contains(Form Header)', formDiv).length, 1, 'There is a form header');
+    assert.equal(find('label:contains(Create a Pizza)', formDiv).length, 1, 'There is a form header');
 
-    assert.equal(find('label:contains(Form Dropdown)', formDiv).length, 1, 'There is a dropdown header');
+    assert.equal(find('label:contains(Pizza Crust)', formDiv).length, 1, 'There is a dropdown header');
     assert.equal(find('select', formDiv).length, 1, 'There is a dropdown');
-    assert.equal(find('option', formDiv).length, 2, 'There are options');
+    assert.equal(find('option', formDiv).length, crusts.length, 'There are options');
 
-    assert.equal(find('label:contains(Form Checkbox)', formDiv).length, 1, 'There is a checkbox header');
-    assert.equal(find('input[type=checkbox]', formDiv).length, 2, 'There are checkboxes');
+    assert.equal(find('label:contains(Pizza Toppings)', formDiv).length, 1, 'There is a checkbox header');
+    assert.equal(find('input[type=checkbox]', formDiv).length, toppings.length, 'There are checkboxes');
 
-    assert.equal(find('label:contains(Form large text)', formDiv).length, 1, 'There is a textarea header');
+    assert.equal(find('label:contains(Special Instructions)', formDiv).length, 1, 'There is a textarea header');
     assert.equal(find('textarea', formDiv).length, 1, 'There is a textarea');
 
-    assert.equal(find('label:contains(Form radio)', formDiv).length, 1, 'There is a radio header');
-    assert.equal(find('input[type=radio]', formDiv).length, 3, 'There are radios');
-    assert.equal(find('label:contains(other option)', formDiv).length, 1, 'There is the other option radio');
-    assert.equal(find('label:contains(other option) input[type=text]', formDiv).length, 1, 'There is the other option input');
+    assert.equal(find('label:contains(Dessert)', formDiv).length, 1, 'There is a radio header');
+    assert.equal(find('input[type=radio]', formDiv).length, desserts.length, 'There are radios');
 
-    assert.equal(find('label:contains(Form simple text)', formDiv).length, 1, 'There is a text header');
-    assert.equal(find('label:contains(Form simple text)+input[type=text]', formDiv).length, 1, 'There is a text input');
+    assert.equal(find('label:contains(Beverage)', formDiv).length, 1, 'There is a text header');
+    assert.equal(find('label:contains(Beverage)+input[type=text]', formDiv).length, 1, 'There is a text input');
   });
 });
 
 Ember.Test.registerAsyncHelper('fillCustomForm', function(app, header) {
   let formSelector = `h4:contains(${header}) + .js-custom-form`;
-  select(`${formSelector} select`, 'Value 2');
+  select(`${formSelector} select`, crusts[2]);
   click(`${formSelector} input[type=checkbox]:last`);
   click(`${formSelector} input[type=radio]:nth(1)`);
   fillIn(`${formSelector} textarea`, `Large text for the form ${header}`);
-  fillIn(`${formSelector} label:contains(Form simple text)+input[type=text]`, `Small text for the form ${header}`);
+  fillIn(`${formSelector} label:contains(Beverage)+input[type=text]`, `Small text for the form ${header}`);
 });
 
 Ember.Test.registerAsyncHelper('checkCustomFormIsFilled', function(app, assert, header) {
@@ -144,12 +142,12 @@ Ember.Test.registerAsyncHelper('checkCustomFormIsFilled', function(app, assert, 
   andThen(() => {
     let formDiv = find(`h4:contains(${header}) + .js-custom-form`);
 
-    assert.equal(find('label:contains(Form Header)', formDiv).length, 1, 'There is a form header');
-    assert.equal(find('select', formDiv).val(), 'Value 2', 'There is value in select');
+    assert.equal(find('label:contains(Create a Pizza)', formDiv).length, 1, 'There is a form header');
+    assert.equal(find('select', formDiv).val(), crusts[2], 'There is value in select');
     assert.ok(find('input[type=checkbox]:last', formDiv).is(':checked'), 'There is value in checkbox');
-    assert.equal(find('input:radio:checked', formDiv).val(), 'radio 2', 'There is value in radio');
+    assert.equal(find('input:radio:checked', formDiv).val(), desserts[1], 'There is value in radio');
     assert.equal(find('textarea', formDiv).val(), `Large text for the form ${header}`, 'There is value in textarea');
-    assert.equal(find('label:contains(Form simple text)+input[type=text]', formDiv).val(), `Small text for the form ${header}`, 'There is value in the input');
+    assert.equal(find('label:contains(Beverage)+input[type=text]', formDiv).val(), `Small text for the form ${header}`, 'There is value in the input');
   });
 });
 
@@ -159,9 +157,9 @@ Ember.Test.registerAsyncHelper('checkCustomFormIsFilledAndReadonly', function(ap
   andThen(() => {
     let formDiv = find(`h4:contains(${header}) + .js-custom-form`);
 
-    assert.equal(find('label:contains(Form Header)', formDiv).length, 1, 'There is a form header');
-    assert.equal(find('p:contains(Value 2)', formDiv).length, 1, 'There is text from select');
-    assert.equal(find('p:contains(radio 2)', formDiv).length, 1, 'There is text from radio');
+    assert.equal(find('label:contains(Create a Pizza)', formDiv).length, 1, 'There is a form header');
+    assert.equal(find(`p:contains(${crusts[2]})`, formDiv).length, 1, 'There is text from select');
+    assert.equal(find(`p:contains(${desserts[1]})`, formDiv).length, 1, 'There is text from radio');
     assert.ok(find('input[type=checkbox]:last', formDiv).is(':checked'), 'There is value in checkbox');
     assert.equal(find(`p:contains(Large text for the form ${header})`, formDiv).length, 1, 'There is text from textarea');
     assert.equal(find(`p:contains(Small text for the form ${header})`, formDiv).length, 1, 'There is text from input');
