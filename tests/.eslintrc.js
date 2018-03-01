@@ -15,6 +15,7 @@ module.exports = {
     'checkCustomFormIsDisplayed': true,
     'checkCustomFormIsFilled': true,
     'checkCustomFormIsFilledAndReadonly': true,
+    'createCustomFormForType': true,
     'fillCustomForm': true,
     'invalidateSession': true,
     'require': true,
